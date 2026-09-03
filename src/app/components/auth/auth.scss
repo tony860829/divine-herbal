@@ -1,0 +1,366 @@
+@use 'sass:color';
+
+$red: #4a7c3f;
+$black: #111;
+$gray-bg: #f8f8f8;
+$gray-border: #e8e8e8;
+$yellow: #7E7504;
+
+.auth {
+  padding: 60px 0 100px;
+  background: $gray-bg;
+  min-height: 100vh;
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  // ===== HERO =====
+  &__hero {
+    max-width: 700px;
+    text-align: center;
+    margin: 0 auto 40px;
+  }
+
+  &__hero-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $red;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  &__hero-title {
+    font-size: 42px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $black;
+    line-height: 1.05;
+    margin: 0 0 16px 0;
+    letter-spacing: -1px;
+
+    @media (max-width: 768px) {
+      font-size: 36px;
+    }
+  }
+
+  &__hero-line {
+    width: 55px;
+    height: 5px;
+    background: $yellow;
+    border-radius: 3px;
+    margin: 0 auto 22px;
+  }
+
+  &__hero-text {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 auto;
+    max-width: 500px;
+  }
+
+  // ===== CARD =====
+  &__card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+
+    @media (max-width: 600px) {
+      padding: 28px 20px;
+    }
+  }
+
+  // ===== TABS =====
+  &__tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid $gray-border;
+    padding-bottom: 2px;
+  }
+
+  &__tab {
+    flex: 1;
+    padding: 14px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: $red;
+      border-radius: 2px;
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    &.active {
+      color: $black;
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+
+    &:hover:not(.active) {
+      color: #555;
+    }
+  }
+
+  // ===== FORM =====
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: 0.5px;
+  }
+
+  &__input {
+    height: 52px;
+    padding: 0 18px;
+    border: 2px solid $gray-border;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $black;
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+
+    &::placeholder {
+      color: #aaa;
+    }
+
+    &:focus {
+      border-color: $yellow;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.15);
+    }
+
+    &--error {
+      border-color: $red;
+      background: #fff5f5;
+
+      &:focus {
+        box-shadow: 0 0 0 4px rgba(227, 6, 19, 0.1);
+      }
+    }
+  }
+
+  &__error {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba($red, 0.08);
+    color: $red;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    border-left: 3px solid $red;
+  }
+
+  // ===== PASSWORD STRENGTH =====
+  &__strength {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    background: $gray-bg;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &--ok {
+      color: #22c55e;
+    }
+  }
+
+  // ===== CHECKBOX =====
+  &__checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    input:checked ~ .auth__checkbox-indicator {
+      background: $red;
+      border-color: $red;
+
+      &::after {
+        transform: scale(1);
+      }
+    }
+  }
+
+  &__checkbox-indicator {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 2px;
+      transform: scale(0);
+      transition: transform 0.2s;
+    }
+  }
+
+  &__checkbox-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    line-height: 1.5;
+
+    strong {
+      color: $black;
+      font-weight: 700;
+    }
+  }
+
+  // ===== SUBMIT =====
+  &__submit {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+
+    svg {
+      transition: transform 0.2s;
+    }
+
+    &:hover:not(:disabled) svg {
+      transform: translateX(3px);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  // ===== SWITCH =====
+  &__switch {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+  }
+
+  &__link {
+    background: none;
+    border: none;
+    color: $red;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+
+    &:hover {
+      color: color.adjust($red, $lightness: -10%);
+    }
+  }
+
+  // ===== SUCCESS CARD =====
+  &__success-card {
+    text-align: center;
+    padding: 40px 20px;
+
+    p {
+      font-size: 16px;
+      color: $black;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+    }
+  }
+}
+
+// ===== BUTTONS =====
+.btn-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: $red;
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(227, 6, 19, 0.35);
+  }
+}

@@ -1,0 +1,35 @@
+export interface Company {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  logo: string;
+  token: string;
+  slogan: string;
+  linkFacebook: string;
+  linkInstagram: string;
+  linkLinkedin: string;
+  phone?: any;
+  address?: any;
+  email?: any;
+  ownerUserId?: any;
+  status?: any;
+  setupStatus?: any;
+  stripeCustomerId?: any;
+  defaultPaymentMethodLast4?: any;
+  defaultPaymentMethodBrand?: any;
+  stripeAccountId?: any;
+  connectOnboardingStatus?: any;
+  stripePriceId?: any;
+  subscriptionStatus?: any;
+  subscriptionCurrentPeriodEnd?: any;
+  leads: any[];
+  posts: any[];
+  userCompanies: any[];
+  categoryProducts: any[];
+  measures: any[];
+  colors: any[];
+  services: any[];
+  createdAtUtc?: any;
+  updatedAtUtc?: any;
+}

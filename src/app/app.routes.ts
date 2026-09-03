@@ -7,6 +7,11 @@ export const routes: Routes = [
     title: 'Divine Herbal Remedies - Nature Heals, Faith Restores'
   },
   {
+    path: 'login',
+    loadComponent: () => import('./components/auth/auth').then((c) => c.Auth),
+    title: 'Login - Divine Herbal Remedies'
+  },
+  {
     path: 'remedies',
     loadComponent: () => import('./pages/remedies/remedies').then(m => m.Remedies),
     title: 'Remedies - Divine Herbal Remedies'

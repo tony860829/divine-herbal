@@ -26,8 +26,9 @@ export class Auth {
   currentUser = signal<CurrentUser | null>(null);
   company = signal<Company | null>(null);
   isAuthenticated = signal<boolean>(false);
-
   returnUrl = signal<string | null>(null);
+
+  private initialized = false;
 
   setReturnUrl(url: string) {
     this.returnUrl.set(url);
@@ -37,9 +38,26 @@ export class Auth {
     this.returnUrl.set(null);
   }
 
-  private initialized = false;
+  /** Extrae y decodifica las claims directamente desde el payload del JWT */
+  decodeToken(token: string): any {
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const decodedJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+      return JSON.parse(decodedJson);
+    } catch (e) {
+      return null;
+    }
+  }
 
-  /** Lazy init to avoid circular dependency */
+  /** Actualiza la señal de usuario y guarda el acceso a recetas en localStorage */
+  updateCurrentUser(user: CurrentUser) {
+    this.currentUser.set(user);
+    if (isPlatformBrowser(this.platformId) && user.hasRecipeAccess !== undefined) {
+      localStorage.setItem('hasRecipeAccess', String(user.hasRecipeAccess));
+    }
+  }
+
+  /** Inicialización lazy para evitar dependencias circulares al cargar la app */
   initApp() {
     if (this.initialized) return;
     this.initialized = true;
@@ -47,8 +65,21 @@ export class Auth {
     const token = this.getToken();
     if (token) {
       this.isAuthenticated.set(true);
+
+      const payload = this.decodeToken(token);
+      const tokenRecipeAccess = payload?.hasRecipeAccess === true || payload?.hasRecipeAccess === 'true';
+      const localAccess = isPlatformBrowser(this.platformId) && localStorage.getItem('hasRecipeAccess') === 'true';
+      const hasRecipeAccess = tokenRecipeAccess || localAccess;
+
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('hasRecipeAccess', String(hasRecipeAccess));
+      }
+
       this.getCurrentUser().subscribe((user) => {
-        this.currentUser.set(user);
+        this.currentUser.set({
+          ...user,
+          hasRecipeAccess: user.hasRecipeAccess ?? hasRecipeAccess,
+        });
 
         if (user.companies?.length) {
           this.getCompanyById(user.companies[0].id).subscribe((company) => {
@@ -72,15 +103,29 @@ export class Auth {
       )
       .pipe(
         tap((resp) => {
-          if (isPlatformBrowser(this.platformId)) {
+          let hasAccess = false;
+
+          if (isPlatformBrowser(this.platformId) && resp.token) {
             localStorage.setItem('token', resp.token);
+
+            const payload = this.decodeToken(resp.token);
+            hasAccess = payload?.hasRecipeAccess === true || payload?.hasRecipeAccess === 'true';
+
+            localStorage.setItem('hasRecipeAccess', String(hasAccess));
+
+            resp.decodedToken = payload;
+            resp.hasRecipeAccess = hasAccess;
           }
 
           this.initialized = false;
           this.isAuthenticated.set(true);
 
           this.getCurrentUser().subscribe((user) => {
-            this.currentUser.set(user);
+            const finalAccess = resp.hasRecipeAccess ?? user.hasRecipeAccess ?? hasAccess;
+            this.currentUser.set({
+              ...user,
+              hasRecipeAccess: finalAccess,
+            });
 
             if (user.companies?.length) {
               this.getCompanyById(user.companies[0].id).subscribe((company) => {
@@ -121,6 +166,7 @@ export class Auth {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
+      localStorage.removeItem('hasRecipeAccess');
       this.currentUser.set(null);
       this.company.set(null);
       this.isAuthenticated.set(false);

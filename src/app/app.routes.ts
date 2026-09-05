@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { recipeAccessGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -14,12 +15,14 @@ export const routes: Routes = [
   {
     path: 'remedies',
     loadComponent: () => import('./pages/remedies/remedies').then(m => m.Remedies),
-    title: 'Remedies - Divine Herbal Remedies'
+    title: 'Remedies - Divine Herbal Remedies',
+    canActivate: [recipeAccessGuard],
   },
   {
     path: 'categories',
     loadComponent: () => import('./pages/categories/categories').then(m => m.Categories),
-    title: 'Categories - Divine Herbal Remedies'
+    title: 'Categories - Divine Herbal Remedies',
+    canActivate: [recipeAccessGuard],
   },
   { path: '**', redirectTo: '' }
 ];

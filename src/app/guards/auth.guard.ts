@@ -1,31 +1,22 @@
+// src/app/guards/recipe-access.guard.ts
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { Auth } from '../services/auht';
-import { Toast } from '../services/toast';
+import { Auth as AuthService } from '../services/auht';
 
-export const AuthGuard: CanActivateFn = (route, state) => {
-  const authService = inject(Auth);
-  const toastr = inject(Toast);
+export const recipeAccessGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
   const router = inject(Router);
-  const platformId = inject(PLATFORM_ID);
 
-  // ✅ En el servidor: SIEMPRE permitimos
-  // El cliente se encargará de validar después de hidratar
-  if (!isPlatformBrowser(platformId)) {
+  const user = authService.currentUser();
+  const hasLocalAccess = localStorage.getItem('hasRecipeAccess') === 'true';
+
+  // Verifica tanto en la señal del estado del usuario como en localStorage
+  const hasAccess = user?.hasRecipeAccess || hasLocalAccess;
+
+  if (hasAccess) {
     return true;
   }
 
-  // ✅ En el cliente: validamos normalmente
-  if (authService.isAuthenticated()) {
-    return true;
-  }
-
-  authService.setReturnUrl(state.url);
-  toastr.show({
-    text: 'Please login first!',
-    type: 'info',
-  });
-  router.navigate(['login']);
-  return false;
+  // Si no ha pagado o no se ha autenticado, redirigir a la vista de Auth/Payment
+  return router.createUrlTree(['/login']);
 };

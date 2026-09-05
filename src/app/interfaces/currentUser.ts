@@ -17,6 +17,7 @@ export interface CurrentUser {
   postalCode: string;
   city: string;
   state: string;
+  hasRecipeAccess:boolean;
 }
 
 export interface Company {

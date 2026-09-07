@@ -20,4 +20,5 @@ import { Spinner } from './components/spinner/spinner';
   `,
   styleUrls: ['./app.scss'],
 })
-export class App {}
+export class App {
+}

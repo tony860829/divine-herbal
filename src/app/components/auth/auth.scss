@@ -325,40 +325,6 @@ $yellow: #7E7504;
       color: color.adjust($red, $lightness: -10%);
     }
   }
-
-  // ===== CHECKOUT REDIRECT STATE =====
-  &__checkout-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 40px 20px;
-    gap: 16px;
-  }
-
-  &__spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid $gray-border;
-    border-top-color: $red;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  &__checkout-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: $black;
-    margin: 0;
-  }
-
-  &__checkout-text {
-    font-size: 14px;
-    color: #666;
-    line-height: 1.6;
-    max-width: 360px;
-    margin: 0;
-  }
 }
 
 // ===== BUTTONS =====
@@ -392,7 +358,7 @@ $yellow: #7E7504;
   }
 }
 
-// ===== PAYMENT STEP (Embedded Stripe) =====
+// ===== STRIPE CARD ELEMENT =====
 .auth__card-element {
   padding: 16px;
   border: 2px solid $gray-border;
@@ -458,14 +424,13 @@ $yellow: #7E7504;
 }
 
 // ============================================================
-// ===== CHECKOUT DE PAGO ÚNICO (nuevas clases) =====
+// ===== CHECKOUT DE PAGO ÚNICO =====
 // ============================================================
 
 .auth__form--checkout {
   gap: 24px;
 }
 
-// ===== Resumen de orden =====
 .auth__checkout {
   background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
   border: 2px solid #bbf7d0;
@@ -601,12 +566,10 @@ $yellow: #7E7504;
   }
 }
 
-// ===== Campo de tarjeta =====
 .auth__field--card {
   margin-top: 4px;
 }
 
-// ===== Botón de pago prominente =====
 .auth__submit--pay {
   padding: 20px 32px;
   font-size: 15px;
@@ -626,7 +589,6 @@ $yellow: #7E7504;
   }
 }
 
-// ===== Garantía debajo del botón =====
 .auth__checkout-guarantee {
   display: flex;
   align-items: center;

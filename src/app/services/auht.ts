@@ -1,44 +1,104 @@
 import { HttpClient } from '@angular/common/http';
-import {
-  inject,
-  Injectable,
-  PLATFORM_ID,
-  signal,
-  EnvironmentInjector,
-  runInInjectionContext,
-} from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { tap, Observable } from 'rxjs';
+import { tap, Observable, switchMap, map, of, finalize, catchError } from 'rxjs';
 import { CurrentUser } from '../interfaces/currentUser';
 import { isPlatformBrowser } from '@angular/common';
 import { Company } from '../interfaces/company';
 import { Password } from '../interfaces/password';
-import { Cart } from './cart';
 
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-  private _injector = inject(EnvironmentInjector);
   private URL = environment.API_URL;
   private tokenKey = environment.TOKEN;
 
+  /* ===== Signals ===== */
   currentUser = signal<CurrentUser | null>(null);
   company = signal<Company | null>(null);
   isAuthenticated = signal<boolean>(false);
-  returnUrl = signal<string | null>(null);
+  /**
+   * Se ejecuta al arrancar la app.
+   * Retorna un Observable para que APP_INITIALIZER espere a la API antes de cargar las rutas.
+   */
+  initApp(): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      this.isAuthenticated.set(false);
+      return of(null);
+    }
 
-  private initialized = false;
+    return this.getCurrentUser().pipe(
+      switchMap((user) => {
+        const localAccess =
+          isPlatformBrowser(this.platformId) && localStorage.getItem('hasRecipeAccess') === 'true';
+        const finalAccess = user.hasRecipeAccess ?? localAccess;
 
-  setReturnUrl(url: string) {
-    this.returnUrl.set(url);
+        this.currentUser.set({
+          ...user,
+          hasRecipeAccess: finalAccess,
+        });
+        this.isAuthenticated.set(true);
+
+        if (user.companies?.length) {
+          return this.getCompanyById(user.companies[0].id).pipe(
+            tap((company) => this.company.set(company)),
+          );
+        }
+        return of(user);
+      }),
+      catchError(() => {
+        // Si el token expiró o falló la petición, limpiamos la sesión
+        this.logout();
+        return of(null);
+      }),
+    );
   }
 
-  clearReturnUrl() {
-    this.returnUrl.set(null);
+  login(data: any) {
+    return this.http
+      .post<any>(`${this.URL}/User/authenticate?companyToken=${this.tokenKey}`, data)
+      .pipe(
+        switchMap((resp) => {
+          let hasAccess = false;
+
+          if (isPlatformBrowser(this.platformId) && resp.token) {
+            localStorage.setItem('token', resp.token);
+
+            const payload = this.decodeToken(resp.token);
+            hasAccess = payload?.hasRecipeAccess === true || payload?.hasRecipeAccess === 'true';
+            localStorage.setItem('hasRecipeAccess', String(hasAccess));
+
+            resp.decodedToken = payload;
+            resp.hasRecipeAccess = hasAccess;
+          }
+
+          this.isAuthenticated.set(true);
+
+          return this.getCurrentUser().pipe(
+            switchMap((user) => {
+              const finalAccess = resp.hasRecipeAccess ?? user.hasRecipeAccess ?? hasAccess;
+              this.currentUser.set({
+                ...user,
+                hasRecipeAccess: finalAccess,
+              });
+
+              if (user.companies?.length) {
+                return this.getCompanyById(user.companies[0].id).pipe(
+                  tap((company) => {
+                    this.company.set(company);
+                  }),
+                  map(() => resp),
+                );
+              }
+              return of(resp);
+            }),
+          );
+        }),
+      );
   }
 
-  /** Extrae y decodifica las claims directamente desde el payload del JWT */
   decodeToken(token: string): any {
     try {
       const payloadBase64 = token.split('.')[1];
@@ -49,7 +109,6 @@ export class Auth {
     }
   }
 
-  /** Actualiza la señal de usuario y guarda el acceso a recetas en localStorage */
   updateCurrentUser(user: CurrentUser) {
     this.currentUser.set(user);
     if (isPlatformBrowser(this.platformId) && user.hasRecipeAccess !== undefined) {
@@ -57,91 +116,8 @@ export class Auth {
     }
   }
 
-  /** Inicialización lazy para evitar dependencias circulares al cargar la app */
-  initApp() {
-    if (this.initialized) return;
-    this.initialized = true;
-
-    const token = this.getToken();
-    if (token) {
-      this.isAuthenticated.set(true);
-
-      const payload = this.decodeToken(token);
-      const tokenRecipeAccess = payload?.hasRecipeAccess === true || payload?.hasRecipeAccess === 'true';
-      const localAccess = isPlatformBrowser(this.platformId) && localStorage.getItem('hasRecipeAccess') === 'true';
-      const hasRecipeAccess = tokenRecipeAccess || localAccess;
-
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('hasRecipeAccess', String(hasRecipeAccess));
-      }
-
-      this.getCurrentUser().subscribe((user) => {
-        this.currentUser.set({
-          ...user,
-          hasRecipeAccess: user.hasRecipeAccess ?? hasRecipeAccess,
-        });
-
-        if (user.companies?.length) {
-          this.getCompanyById(user.companies[0].id).subscribe((company) => {
-            this.company.set(company);
-          });
-        }
-      });
-    } else {
-      return runInInjectionContext(this._injector, () => {
-        const cartService = inject(Cart);
-        cartService.refreshCart();
-      });
-    }
-  }
-
-  login(data: any) {
-    return this.http
-      .post<any>(
-        `${this.URL}/User/authenticate?companyToken=${this.tokenKey}`,
-        data
-      )
-      .pipe(
-        tap((resp) => {
-          let hasAccess = false;
-
-          if (isPlatformBrowser(this.platformId) && resp.token) {
-            localStorage.setItem('token', resp.token);
-
-            const payload = this.decodeToken(resp.token);
-            hasAccess = payload?.hasRecipeAccess === true || payload?.hasRecipeAccess === 'true';
-
-            localStorage.setItem('hasRecipeAccess', String(hasAccess));
-
-            resp.decodedToken = payload;
-            resp.hasRecipeAccess = hasAccess;
-          }
-
-          this.initialized = false;
-          this.isAuthenticated.set(true);
-
-          this.getCurrentUser().subscribe((user) => {
-            const finalAccess = resp.hasRecipeAccess ?? user.hasRecipeAccess ?? hasAccess;
-            this.currentUser.set({
-              ...user,
-              hasRecipeAccess: finalAccess,
-            });
-
-            if (user.companies?.length) {
-              this.getCompanyById(user.companies[0].id).subscribe((company) => {
-                this.company.set(company);
-              });
-            }
-          });
-        })
-      );
-  }
-
   signUp(data: any) {
-    return this.http.post<any>(
-      `${this.URL}/User/register?token=${this.tokenKey}`,
-      data
-    );
+    return this.http.post<any>(`${this.URL}/User/register?token=${this.tokenKey}`, data);
   }
 
   getCurrentUser(): Observable<CurrentUser> {
@@ -170,7 +146,6 @@ export class Auth {
       this.currentUser.set(null);
       this.company.set(null);
       this.isAuthenticated.set(false);
-      this.initialized = false;
     }
   }
 }

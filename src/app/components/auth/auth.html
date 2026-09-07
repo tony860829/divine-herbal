@@ -1,55 +1,43 @@
 <section class="auth">
   <div class="container">
-    <!-- Hero dinámico -->
+    <!-- Hero -->
     <div class="auth__hero">
-      <span class="auth__hero-label">
-        {{ activeTab() === 'payment' ? 'Secure Checkout' : 'Account' }}
-      </span>
+      <span class="auth__hero-label">Account</span>
       <h1 class="auth__hero-title">
-        {{
-          activeTab() === 'login'
-            ? 'Welcome Back'
-            : activeTab() === 'register'
-              ? 'Create Account'
-              : 'Complete Your Purchase'
-        }}
+        {{ activeTab === 'login' ? 'Welcome Back' : 'Create Account' }}
       </h1>
       <div class="auth__hero-line"></div>
       <p class="auth__hero-text">
         {{
-          activeTab() === 'login'
+          activeTab === 'login'
             ? 'Welcome back! Please enter your details to access your account.'
-            : activeTab() === 'register'
-              ? 'Create an account to get started with our natural remedies.'
-              : 'You are seconds away from unlocking unlimited access. Your card will be charged immediately.'
+            : 'Create an account to get started with our natural remedies.'
         }}
       </p>
     </div>
 
-    <!-- Card principal -->
+    <!-- Card -->
     <div class="auth__card">
       <!-- Tabs -->
-      @if (activeTab() === 'login' || activeTab() === 'register') {
-        <div class="auth__tabs">
-          <button
-            class="auth__tab"
-            [class.active]="activeTab() === 'login'"
-            (click)="activeTab.set('login')"
-          >
-            Sign In
-          </button>
-          <button
-            class="auth__tab"
-            [class.active]="activeTab() === 'register'"
-            (click)="activeTab.set('register')"
-          >
-            Join Now
-          </button>
-        </div>
-      }
+      <div class="auth__tabs">
+        <button
+          class="auth__tab"
+          [class.active]="activeTab === 'login'"
+          (click)="activeTab = 'login'"
+        >
+          Sign In
+        </button>
+        <button
+          class="auth__tab"
+          [class.active]="activeTab === 'register'"
+          (click)="activeTab = 'register'"
+        >
+          Join Now
+        </button>
+      </div>
 
       <!-- Login -->
-      @if (activeTab() === 'login') {
+      @if (activeTab === 'login') {
         <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" class="auth__form">
           <div class="auth__field">
             <label class="auth__label">Email</label>
@@ -94,7 +82,7 @@
 
           <p class="auth__switch">
             Don't have an account?
-            <button type="button" class="auth__link" (click)="activeTab.set('register')">
+            <button type="button" class="auth__link" (click)="activeTab = 'register'">
               Register here
             </button>
           </p>
@@ -102,7 +90,7 @@
       }
 
       <!-- Register -->
-      @if (activeTab() === 'register') {
+      @if (activeTab === 'register') {
         <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()" class="auth__form">
           <div class="auth__row">
             <div class="auth__field">
@@ -124,9 +112,12 @@
           <div class="auth__row">
             <div class="auth__field">
               <label class="auth__label">Phone</label>
-              <input type="tel" class="auth__input" formControlName="phone" placeholder="(897) 444-6532" />
+              <input type="tel" class="auth__input" formControlName="phone" placeholder="(897) 444-6532" phoneMask />
               @if (f['phone'].touched && f['phone'].errors?.['required']) {
                 <span class="auth__error">Phone is required.</span>
+              }
+              @if (f['phone'].touched && f['phone'].errors?.['invalidPhone']) {
+                <span class="auth__error">Invalid phone number.</span>
               }
             </div>
             <div class="auth__field">
@@ -204,123 +195,11 @@
 
           <p class="auth__switch">
             Already have an account?
-            <button type="button" class="auth__link" (click)="activeTab.set('login')">
+            <button type="button" class="auth__link" (click)="activeTab = 'login'">
               Login here
             </button>
           </p>
         </form>
-      }
-
-      <!-- Payment: Checkout de pago único -->
-      @if (activeTab() === 'payment') {
-        <div class="auth__form auth__form--checkout">
-          
-          <!-- Resumen de orden -->
-          <div class="auth__checkout">
-            <div class="auth__checkout-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
-              Lifetime Access
-            </div>
-            
-            <h2 class="auth__checkout-title">Herbal Remedies Complete Library</h2>
-            <p class="auth__checkout-desc">
-              Unlimited access to 200+ natural remedies, recipes, and wellness guides. One-time payment. No subscriptions. No hidden fees.
-            </p>
-
-            <ul class="auth__checkout-features">
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                200+ verified herbal recipes
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Instant digital access
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Free updates for life
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                30-day money-back guarantee
-              </li>
-            </ul>
-
-            <div class="auth__checkout-divider"></div>
-
-            <div class="auth__checkout-row">
-              <span>Subtotal</span>
-              <span>$29.00</span>
-            </div>
-            <div class="auth__checkout-row auth__checkout-row--total">
-              <span class="auth__checkout-total-label">Total due today</span>
-              <span class="auth__checkout-total-price">$29.00 <small>USD</small></span>
-            </div>
-          </div>
-
-          <!-- Tarjeta -->
-          <div class="auth__field auth__field--card">
-            <label class="auth__label">Card Information</label>
-            <div class="auth__card-element">
-              <div #cardElement id="card-element"></div>
-            </div>
-            @if (errorMessage) {
-              <span class="auth__error">{{ errorMessage }}</span>
-            }
-            <div class="auth__brands">
-              <img src="images/visa.svg" height="24" alt="Visa" />
-              <img src="images/mastercard.svg" height="24" alt="Mastercard" />
-              <img src="images/amex.svg" height="24" alt="American Express" />
-              <img src="images/discover.svg" height="24" alt="Discover" />
-            </div>
-          </div>
-
-          <!-- Nota de seguridad -->
-          <div class="auth__secure-note">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0110 0v4"/>
-            </svg>
-            Your payment is secured with 256-bit SSL encryption. We never store your card details.
-          </div>
-
-          <!-- Botón de pago prominente -->
-          <button
-            type="button"
-            class="btn btn-red auth__submit auth__submit--pay"
-            (click)="processPayment()"
-            [disabled]="!isCardComplete || isProcessing()"
-          >
-            @if (isProcessing()) {
-              <span class="auth__btn-spinner"></span>
-              Processing Payment...
-            } @else {
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                <line x1="1" y1="10" x2="23" y2="10"/>
-              </svg>
-              Pay $29.00 & Unlock Now
-            }
-          </button>
-
-          <!-- Garantía debajo del botón -->
-          <p class="auth__checkout-guarantee">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            30-Day Money-Back Guarantee &middot; Instant Access &middot; Secure Checkout
-          </p>
-        </div>
       }
     </div>
   </div>

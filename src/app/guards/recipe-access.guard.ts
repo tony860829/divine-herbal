@@ -10,13 +10,11 @@ export const recipeAccessGuard: CanActivateFn = () => {
   const user = authService.currentUser();
   const hasLocalAccess = localStorage.getItem('hasRecipeAccess') === 'true';
 
-  // Verifica tanto en la señal del estado del usuario como en localStorage
   const hasAccess = user?.hasRecipeAccess || hasLocalAccess;
 
   if (hasAccess) {
     return true;
   }
 
-  // Si no ha pagado o no se ha autenticado, redirigir a la vista de Auth/Payment
   return router.createUrlTree(['/login']);
 };

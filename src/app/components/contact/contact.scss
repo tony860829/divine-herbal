@@ -1,0 +1,490 @@
+// ===== VARIABLES =====
+$red: #7E7504;
+$yellow: #4a7c3f;
+$black: #111;
+$gray: #333;
+$light-gray: #f5f5f5;
+$border-radius: 12px;
+$message: #e30613;
+
+// ===== HERO: Blanco (igual que Catering, About, Locations) =====
+.contact-hero {
+  background: #f8f8f8 !important;
+  padding: 60px 0 80px;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__inner {
+    max-width: 700px;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  &__label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $yellow;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 42px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $black;
+    line-height: 1.05;
+    margin: 0 0 16px 0;
+    letter-spacing: -1px;
+
+    @media (max-width: 768px) {
+      font-size: 36px;
+    }
+  }
+
+  &__line {
+    width: 55px;
+    height: 5px;
+    background: $red;
+    border-radius: 3px;
+    margin: 0 auto 22px;
+  }
+
+  &__text {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 auto;
+    max-width: 500px;
+  }
+}
+
+// ===== INFO CARDS =====
+.contact-info {
+  padding: 60px 0;
+  background: #fff;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: -40px;
+    position: relative;
+    z-index: 3;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+      margin-top: -30px;
+    }
+  }
+
+  &__card {
+    background: #fff;
+    border-radius: $border-radius;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    }
+  }
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    background: $yellow;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: $light-gray;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $black;
+    margin: 0 0 10px 0;
+    letter-spacing: 0.5px;
+  }
+
+  &__text {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: $red;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: gap 0.2s;
+
+    svg {
+      transition: transform 0.2s;
+    }
+
+    &:hover {
+      gap: 10px;
+
+      svg {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  &__badge {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+}
+
+// ===== MAIN: FORM + MAP =====
+.contact-main {
+  padding: 80px 0;
+  background: $light-gray;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  &__form-section {
+    background: #fff;
+    border-radius: $border-radius;
+    padding: 48px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+
+    @media (max-width: 600px) {
+      padding: 32px 24px;
+    }
+  }
+
+  &__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $red;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    font-size: 36px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $black;
+    line-height: 1.1;
+    margin: 0 0 12px 0;
+
+    @media (max-width: 600px) {
+      font-size: 28px;
+    }
+  }
+
+  &__line {
+    width: 40px;
+    height: 4px;
+    background: $yellow;
+    border-radius: 2px;
+    margin: 0 0 16px 0;
+  }
+
+  &__text {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+  }
+
+  &__map-section {
+    position: sticky;
+    top: 100px;
+
+    @media (max-width: 1024px) {
+      position: relative;
+      top: 0;
+    }
+  }
+}
+
+// ===== FORM =====
+.contact-form {
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    margin-bottom: 20px;
+  }
+
+  &__label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $black;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  &__required {
+    color: $red;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e8e8e8;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    color: $black;
+    background: #fafafa;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+
+    &::placeholder {
+      color: #aaa;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $yellow;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.15);
+    }
+
+    &--textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+  }
+
+  &__error {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba($message, 0.08);
+    color: $message;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    border-left: 3px solid $message;
+
+    &::before {
+      content: '!';
+      width: 16px;
+      height: 16px;
+      background: $message;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: $red;
+    color: #fff;
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+
+    svg {
+      transition: transform 0.2s;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba($red, 0.35);
+
+      svg {
+        transform: translateX(4px);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ===== MAP =====
+.contact-map {
+  position: relative;
+  border-radius: $border-radius;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+  height: 100%;
+  min-height: 500px;
+
+  @media (max-width: 1024px) {
+    min-height: 400px;
+  }
+
+  &__iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    filter: grayscale(0.3) contrast(1.1);
+  }
+
+  &__overlay {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    padding: 12px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    font-size: 14px;
+    font-weight: 700;
+    color: $black;
+
+    svg {
+      color: $red;
+    }
+  }
+}
+
+// ===== CTA FINAL =====
+.contact-cta {
+  padding: 80px 0;
+  background: $light-gray;
+  text-align: center;
+
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__title {
+    font-size: 36px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $black;
+    margin: 0 0 12px 0;
+    line-height: 1.1;
+
+    @media (max-width: 600px) {
+      font-size: 28px;
+    }
+  }
+
+  &__text {
+    color: rgba($black, 0.7);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 28px 0;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: $yellow;
+    color: #fff;
+    padding: 18px 40px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    svg {
+      transition: transform 0.2s;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+
+      svg {
+        transform: scale(1.1);
+      }
+    }
+  }
+}

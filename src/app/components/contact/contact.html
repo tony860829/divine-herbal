@@ -1,0 +1,346 @@
+<!-- ===== HERO CONTACT ===== -->
+<section class="contact-hero">
+  <div class="container">
+    <div class="contact-hero__inner">
+      <span class="contact-hero__label">Contact Us</span>
+      <h1 class="contact-hero__title">Let's Talk About Your Next Event</h1>
+      <div class="contact-hero__line"></div>
+      <p class="contact-hero__text">Have a question, want a remedy? We are here to help.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INFO CARDS ===== -->
+<section class="contact-info">
+  <div class="container">
+    <div class="contact-info__grid">
+      <!-- Ubicación -->
+      <div class="contact-info__card">
+        <div class="contact-info__icon">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <h3 class="contact-info__title">Location</h3>
+        <p class="contact-info__text">2720 W Mount Houston Road<br />Houston, TX 77014</p>
+        <a
+          href="https://maps.google.com/?q=2720+W+Mount+Houston+Road+Houston+TX"
+          target="_blank"
+          class="contact-info__link"
+        >
+          Get Directions
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="contact-info__card">
+        <div class="contact-info__icon">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="contact-info__title">Phone</h3>
+        <p class="contact-info__text">(346) 298-8375</p>
+        <a href="tel:+18974446532" class="contact-info__link">
+          Call Now
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Email -->
+      <div class="contact-info__card">
+        <div class="contact-info__icon">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+            ></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <h3 class="contact-info__title">Email</h3>
+        <p class="contact-info__text">support&#64;pckfood.com</p>
+        <a href="mailto:foodtruck@gmail.com" class="contact-info__link">
+          Send Email
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORM + MAP ===== -->
+<section class="contact-main">
+  <div class="container">
+    <div class="contact-main__grid">
+      <!-- Formulario -->
+      <div class="contact-main__form-section">
+        <span class="contact-main__label">Get in Touch</span>
+        <h2 class="contact-main__title">Send Us a Message</h2>
+        <div class="contact-main__line"></div>
+        <p class="contact-main__text">
+          Have questions or want to learn more? Fill out the form below and we'll get back to you as
+          soon as possible.
+        </p>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="contact-form">
+          <div class="contact-form__row">
+            <div class="contact-form__field">
+              <label class="contact-form__label">
+                Name <span class="contact-form__required">*</span>
+              </label>
+              <input
+                type="text"
+                formControlName="firstName"
+                class="contact-form__input"
+                placeholder="John"
+              />
+              @if (firstName.invalid && (firstName.dirty || firstName.touched)) {
+                @if (firstName.hasError('required')) {
+                  <span class="contact-form__error"> Name is required </span>
+                }
+                @if (firstName.hasError('minlength')) {
+                  <span class="contact-form__error"> Minimum 2 characters </span>
+                }
+              }
+            </div>
+
+            <div class="contact-form__field">
+              <label class="contact-form__label"> Last Name </label>
+              <input
+                type="text"
+                formControlName="lastName"
+                class="contact-form__input"
+                placeholder="Doe"
+              />
+              @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
+                @if (lastName.hasError('minlength')) {
+                  <span class="contact-form__error"> Minimum 2 characters </span>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="contact-form__row">
+            <div class="contact-form__field">
+              <label class="contact-form__label">
+                Email <span class="contact-form__required">*</span>
+              </label>
+              <input
+                type="email"
+                formControlName="email"
+                class="contact-form__input"
+                placeholder="john@email.com"
+              />
+              @if (email.invalid && (email.dirty || email.touched)) {
+                @if (email.hasError('required')) {
+                  <span class="contact-form__error"> Email is required </span>
+                }
+                @if (email.hasError('email')) {
+                  <span class="contact-form__error"> Please enter a valid email address </span>
+                }
+              }
+            </div>
+
+            <div class="contact-form__field">
+              <label class="contact-form__label"> Phone </label>
+              <input
+                type="text"
+                phoneMask
+                formControlName="phone"
+                class="contact-form__input"
+                placeholder="(897) 444-6532"
+              />
+              @if (phone.invalid && (phone.dirty || phone.touched)) {
+                @if (phone.hasError('required')) {
+                  <span class="contact-form__error"> Phone is required </span>
+                }
+                @if (phone.hasError('invalidPhone')) {
+                  <span class="contact-form__error">Invalid phone number.</span>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="contact-form__field">
+            <label class="contact-form__label"> Subject </label>
+            <input
+              type="text"
+              formControlName="subject"
+              class="contact-form__input"
+              placeholder="Event Inquiry"
+            />
+          </div>
+
+          <div class="contact-form__field">
+            <label class="contact-form__label">
+              Message <span class="contact-form__required">*</span>
+            </label>
+            <textarea
+              formControlName="comment"
+              rows="5"
+              class="contact-form__input contact-form__input--textarea"
+              placeholder="Tell us about your event or inquiry..."
+            ></textarea>
+            @if (comment.invalid && (comment.dirty || comment.touched)) {
+              @if (comment.hasError('required')) {
+                <span class="contact-form__error"> Message is required </span>
+              }
+              @if (comment.hasError('minlength')) {
+                <span class="contact-form__error"> Message is too short </span>
+              }
+            }
+          </div>
+
+          <button type="submit" [disabled]="form.invalid" class="contact-form__btn">
+            Submit
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Mapa -->
+      <div class="contact-main__map-section">
+        <div class="contact-map">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3458.8345447751385!2d-95.45634572499527!3d29.89786772550152!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8640c8e649a32327%3A0x11d3c6aa749e0f8b!2s2720%20W%20Mt%20Houston%20Rd%2C%20Houston%2C%20TX%2077038!5e0!3m2!1ses!2sus!4v1781115451675!5m2!1ses!2sus"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            width="100%"
+            height="100%"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            class="contact-map__iframe"
+          >
+          </iframe>
+          <div class="contact-map__overlay">
+            <div class="contact-map__badge">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span>PCK Food Truck</span>
+            </div>
+            <p class="contact-map__address">2720 W Mount Houston Road<br />Houston, TX 77014</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section class="contact-cta">
+  <div class="container">
+    <div class="contact-cta__inner">
+      <h2 class="contact-cta__title">Prefer to Talk Directly?</h2>
+      <p class="contact-cta__text">
+        Call us and we will be happy to assist you. We are waiting for your call!
+      </p>
+      <a href="tel:+13462988375" class="contact-cta__btn">
+        Call Now
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+          ></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

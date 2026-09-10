@@ -14,6 +14,11 @@ export const routes: Routes = [
     title: 'Login - Divine Herbal Remedies',
   },
   {
+    path: 'contact',
+    loadComponent: () => import('./components/contact/contact').then((c) => c.Contact),
+    title: 'Contact - Divine Herbal Remedies',
+  },
+  {
     path: 'payment',
     loadComponent: () => import('./components/payment/payment').then((c) => c.Payment),
     title: 'Payment - Divine Herbal Remedies',

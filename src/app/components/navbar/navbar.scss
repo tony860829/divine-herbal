@@ -39,6 +39,8 @@
     padding: 0.5rem 1.5rem;
     border-radius: 2rem;
     transition: all 0.2s;
+    text-decoration: none;
+    outline: none; 
 
     &:hover {
       color: var(--color-primary);

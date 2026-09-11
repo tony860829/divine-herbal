@@ -6,6 +6,7 @@ import {
   signal,
   effect,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -16,6 +17,7 @@ import { environment } from '../../../environments/environment';
 import { Auth as AuthService } from '../../services/auht';
 import { Toast as ToastService } from '../../services/toast';
 import { Spinner as SpinnerService } from '../../services/spinner';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-payment',
@@ -29,6 +31,7 @@ export class Payment implements OnInit {
   private toastr = inject(ToastService);
   private spinnerService = inject(SpinnerService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   isProcessing = signal(false);
 
@@ -103,7 +106,7 @@ export class Payment implements OnInit {
       const res: any = await firstValueFrom(
         this.http.post(`${base}/payments/create-recipe-access-intent`, {
           companyId: company.id,
-        })
+        }),
       );
 
       if (!res?.clientSecret || !res?.connectedAccountId) {
@@ -165,8 +168,7 @@ export class Payment implements OnInit {
   }
 
   async processPayment() {
-    if (!this.stripe || !this.card || !this.clientSecret || !this.isCardComplete)
-      return;
+    if (!this.stripe || !this.card || !this.clientSecret || !this.isCardComplete) return;
 
     this.isProcessing.set(true);
 
@@ -236,10 +238,12 @@ export class Payment implements OnInit {
       this.http.post(`${base}/payments/confirm-recipe-access`, {
         paymentIntentId,
         companyId: company?.id,
-      })
+      }),
     );
 
-    localStorage.setItem('hasRecipeAccess', 'true');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('hasRecipeAccess', 'true');
+    }
 
     const currentUser = this.authService.currentUser();
     if (currentUser) {

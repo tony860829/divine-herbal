@@ -1,8 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -18,6 +14,7 @@ import { Auth as AuthService } from '../../services/auht';
 import { Toast as ToastService } from '../../services/toast';
 import { Spinner as SpinnerService } from '../../services/spinner';
 import { PhoneMaskDirective } from '../../directives/phone-format.directive';
+import { isPlatformBrowser } from '@angular/common';
 
 /* ===== Validators ===== */
 export const confirmPasswordValidator: ValidatorFn = (
@@ -70,6 +67,7 @@ export class Auth implements OnInit {
   private authService = inject(AuthService);
   private toastr = inject(ToastService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   activeTab: 'login' | 'register' = 'login';
 
@@ -144,16 +142,20 @@ export class Auth implements OnInit {
         const hasAccess = res.hasRecipeAccess ?? res.decodedToken?.hasRecipeAccess ?? false;
 
         if (hasAccess) {
-          localStorage.setItem('hasRecipeAccess', 'true');
-          this.router.navigate(['/remedies']);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('hasRecipeAccess', 'true');
+            this.router.navigate(['/remedies']);
+          }
         } else {
           /*
             NO ocultamos el spinner aquí. Se mantiene activo durante
             la navegación al payment. El PaymentComponent lo ocultará
             cuando Stripe esté listo.
           */
-          localStorage.setItem('hasRecipeAccess', 'false');
-          this.router.navigate(['/payment']);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('hasRecipeAccess', 'false');
+            this.router.navigate(['/payment']);
+          }
         }
       },
       error: (err) => this.showError(err),
@@ -187,8 +189,10 @@ export class Auth implements OnInit {
             NO ocultamos el spinner. La navegación a /payment lo mantiene
             cubierto hasta que el PaymentComponent monte Stripe.
           */
-          localStorage.setItem('hasRecipeAccess', 'false');
-          this.router.navigate(['/payment']);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('hasRecipeAccess', 'false');
+            this.router.navigate(['/payment']);
+          }
         },
         error: (err) => this.showError(err),
       });

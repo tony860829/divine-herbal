@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { recipeAccessGuard } from './guards/recipe-access.guard';
 import { paymentGuard } from './guards/payment.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,12 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./components/auth/auth').then((c) => c.Auth),
     title: 'Login - Divine Herbal Remedies',
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile').then((c) => c.Profile),
+    title: 'My Profile - Divine Herbal Remedies',
+    canActivate: [authGuard],
   },
   {
     path: 'contact',
@@ -31,9 +38,9 @@ export const routes: Routes = [
     canActivate: [recipeAccessGuard],
   },
   {
-    path: 'categories',
-    loadComponent: () => import('./pages/categories/categories').then((c) => c.Categories),
-    title: 'Categories - Divine Herbal Remedies',
+    path: 'remedies/:id',
+    loadComponent: () => import('./pages/remedy-detail/remedy-detail').then((c) => c.RemedyDetail),
+    title: 'Remedy - Divine Herbal Remedies',
     canActivate: [recipeAccessGuard],
   },
   { path: '**', redirectTo: '' },

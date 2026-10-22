@@ -32,4 +32,14 @@ export class Product {
   getCategory(id: number) {
     return this.http.get<Category>(`${this.URL}/CategoryProducts/${id}`);
   }
+
+  resolvePictureUrl(name: string): string {
+    if (/^https?:\/\//i.test(name)) {
+      return name;
+    }
+    if (name.startsWith('/')) {
+      return `${environment.URL}${name}`;
+    }
+    return `${this.URL}/Upload/getPhoto2/${name}`;
+  }
 }

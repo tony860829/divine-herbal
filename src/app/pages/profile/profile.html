@@ -1,0 +1,206 @@
+<!-- ===== HERO ===== -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="page-hero__label">My Account</span>
+      <h1 class="page-hero__title">Profile</h1>
+      <div class="page-hero__line"></div>
+      <p class="page-hero__text">
+        Your personal information and your lifetime access to all our natural remedies.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTENT ===== -->
+<section class="profile-main">
+  <div class="container">
+    <div class="profile-grid">
+      <!-- Personal info -->
+      <div class="profile-card">
+        <h2 class="profile-card__title">Personal Information</h2>
+        <div class="profile-user">
+          <span class="profile-user__avatar">{{ initials() }}</span>
+          <div class="profile-user__data">
+            <span class="profile-user__name">
+              {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+            </span>
+            <span class="profile-user__email">{{ currentUser()?.email }}</span>
+          </div>
+        </div>
+        <dl class="profile-rows">
+          <div class="profile-row">
+            <dt>First name</dt>
+            <dd>{{ currentUser()?.firstName }}</dd>
+          </div>
+          <div class="profile-row">
+            <dt>Last name</dt>
+            <dd>{{ currentUser()?.lastName }}</dd>
+          </div>
+          <div class="profile-row">
+            <dt>Email</dt>
+            <dd>{{ currentUser()?.email }}</dd>
+          </div>
+          <div class="profile-row">
+            <dt>Phone</dt>
+            <dd>{{ currentUser()?.phone || '—' }}</dd>
+          </div>
+          <div class="profile-row">
+            <dt>Recipe access</dt>
+            <dd>
+              @if (hasRecipeAccess()) {
+                <span class="profile-badge profile-badge--active">Active</span>
+              } @else {
+                <span class="profile-badge profile-badge--inactive">Not activated</span>
+              }
+            </dd>
+          </div>
+        </dl>
+        <button type="button" class="profile-logout" (click)="logout()">Log out</button>
+      </div>
+
+      <!-- Purchase -->
+      <div class="profile-card">
+        <h2 class="profile-card__title">Your Purchase</h2>
+
+        @if (orders().length) {
+          @for (order of orders(); track order.publicId) {
+            <div class="order-card">
+              <div class="order-card__header">
+                <div>
+                  <span class="order-card__label">Order</span>
+                  <span class="order-card__id">#{{ order.publicId.slice(0, 8) }}</span>
+                </div>
+                <span
+                  class="profile-badge"
+                  [class.profile-badge--active]="order.status === 2"
+                  [class.profile-badge--inactive]="order.status !== 2"
+                >
+                  {{ statusLabel(order.status) }}
+                </span>
+              </div>
+
+              <div class="order-card__item">
+                <div class="order-card__item-info">
+                  <span class="order-card__item-name">
+                    {{ order.items[0]?.name || 'Recipe Access' }}
+                  </span>
+                  <span class="order-card__item-desc">
+                    Payment for the Divine Herbal Remedies service — unlimited lifetime access
+                  </span>
+                </div>
+                <span class="order-card__item-qty">×{{ order.items[0]?.quantity || 1 }}</span>
+              </div>
+
+              <div class="order-card__footer">
+                <div class="order-card__meta">
+                  <span class="order-card__meta-label">Date</span>
+                  <span>{{ order.createdAtUtc | date: 'MMM d, y' }}</span>
+                </div>
+                <div class="order-card__total">
+                  <span class="order-card__meta-label">Total paid</span>
+                  <span>{{ orderAmountLabel(order.totalAmount, order.currency) }}</span>
+                </div>
+                @if (receiptUrl(order)) {
+                  <a [href]="receiptUrl(order)" target="_blank" rel="noopener" class="order-card__receipt">
+                    View receipt
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 17L17 7M17 7H8M17 7v9" />
+                    </svg>
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        } @else if (purchase()) {
+          <div class="order-card">
+            <div class="order-card__header">
+              <div>
+                <span class="order-card__label">Order</span>
+                <span class="order-card__id">
+                  {{ purchase()!.reference ? '#' + purchase()!.reference.slice(0, 14) : 'Recipe Access' }}
+                </span>
+              </div>
+              <span class="profile-badge profile-badge--active">Paid</span>
+            </div>
+
+            <div class="order-card__item">
+              <div class="order-card__item-info">
+                <span class="order-card__item-name">Lifetime Recipe Access</span>
+                <span class="order-card__item-desc">
+                  Payment for the Divine Herbal Remedies service — unlimited lifetime access
+                </span>
+              </div>
+              <span class="order-card__item-qty">×1</span>
+            </div>
+
+            <div class="order-card__footer">
+              @if (purchase()!.dateUtc) {
+                <div class="order-card__meta">
+                  <span class="order-card__meta-label">Date</span>
+                  <span>{{ purchase()!.dateUtc | date: 'MMM d, y' }}</span>
+                </div>
+              }
+              @if (purchase()!.cardBrand) {
+                <div class="order-card__meta">
+                  <span class="order-card__meta-label">Payment method</span>
+                  <span class="text-capitalize">{{ purchase()!.cardBrand }} •••• {{ purchase()!.last4 }}</span>
+                </div>
+              }
+              @if (purchase()!.amount) {
+                <div class="order-card__total">
+                  <span class="order-card__meta-label">Total paid</span>
+                  <span>{{ orderAmountLabel(purchase()!.amount, purchase()!.currency) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        } @else if (hasRecipeAccess()) {
+          <div class="order-card">
+            <div class="order-card__header">
+              <div>
+                <span class="order-card__label">Order</span>
+                <span class="order-card__id">Recipe Access</span>
+              </div>
+              <span class="profile-badge profile-badge--active">Paid</span>
+            </div>
+            <div class="order-card__item">
+              <div class="order-card__item-info">
+                <span class="order-card__item-name">Lifetime Recipe Access</span>
+                <span class="order-card__item-desc">
+                  Payment for the Divine Herbal Remedies service — unlimited lifetime access
+                </span>
+              </div>
+              <span class="order-card__item-qty">×1</span>
+            </div>
+            <p class="order-card__item-desc">Payment details were sent to your email.</p>
+          </div>
+        } @else {
+          <div class="order-empty">
+            <img src="images/icon-book.webp" alt="" aria-hidden="true" />
+            <p>
+              You don't have recipe access yet. Unlock every natural remedy with a single
+              one-time payment.
+            </p>
+            <a routerLink="/payment" class="profile-cta">Get Access</a>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <a routerLink="/remedies" class="profile-actions__link">
+        Browse Remedies
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+      <a routerLink="/contact" class="profile-actions__link">
+        Contact Us
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

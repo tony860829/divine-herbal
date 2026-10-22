@@ -192,7 +192,7 @@ export class Payment implements OnInit {
       ) {
         await this.handleStripeAction(result.paymentIntent.client_secret!);
       } else if (result.paymentIntent?.status === 'succeeded') {
-        await this.finalizePayment(result.paymentIntent.id);
+        await this.finalizePayment(result.paymentIntent);
       } else {
         throw new Error('Unexpected status: ' + result.paymentIntent?.status);
       }
@@ -220,7 +220,7 @@ export class Payment implements OnInit {
         type: 'danger',
       });
     } else if (paymentIntent?.status === 'succeeded') {
-      await this.finalizePayment(paymentIntent.id);
+      await this.finalizePayment(paymentIntent);
     } else {
       this.isProcessing.set(false);
       this.toastr.show({
@@ -230,19 +230,20 @@ export class Payment implements OnInit {
     }
   }
 
-  private async finalizePayment(paymentIntentId: string) {
+  private async finalizePayment(paymentIntent: any) {
     const base = (environment.API_URL || '').replace(/\/+$/, '');
     const company = this.currentCompany();
 
     await firstValueFrom(
       this.http.post(`${base}/payments/confirm-recipe-access`, {
-        paymentIntentId,
+        paymentIntentId: paymentIntent.id,
         companyId: company?.id,
       }),
     );
 
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('hasRecipeAccess', 'true');
+      this.savePurchaseRecord(paymentIntent);
     }
 
     const currentUser = this.authService.currentUser();
@@ -256,10 +257,29 @@ export class Payment implements OnInit {
     this.isProcessing.set(false);
     this.spinnerService.hide();
     this.toastr.show({
-      text: 'Payment successful! Your lifetime access is now active.',
+      title: 'Payment Successful!',
+      text: 'Your lifetime access to all our natural remedies is now active. Enjoy exploring every recipe!',
       type: 'success',
+      delay: 8000,
     });
 
     this.router.navigate(['/remedies']);
+  }
+
+  private savePurchaseRecord(paymentIntent: any): void {
+    try {
+      const card = paymentIntent?.charges?.data?.[0]?.payment_method_details?.card;
+      const purchase = {
+        reference: paymentIntent?.id ?? '',
+        amount: paymentIntent?.amount ?? null,
+        currency: paymentIntent?.currency ?? 'usd',
+        dateUtc: new Date().toISOString(),
+        cardBrand: card?.brand ?? null,
+        last4: card?.last4 ?? null,
+      };
+      localStorage.setItem('recipePurchase', JSON.stringify(purchase));
+    } catch {
+      /* el acceso ya quedó activo; el registro es solo informativo */
+    }
   }
 }

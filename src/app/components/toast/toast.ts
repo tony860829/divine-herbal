@@ -49,6 +49,9 @@ import { Toast as ToastService } from '../../services/toast';
             }
           </div>
           <div class="toast-body">
+            @if (toast.title) {
+              <div class="toast-title">{{ toast.title }}</div>
+            }
             {{ toast.text }}
           </div>
           <button
@@ -160,6 +163,13 @@ import { Toast as ToastService } from '../../services/toast';
         font-weight: 600;
         color: var(--white, #fff);
         line-height: 1.5;
+      }
+
+      .toast-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--white, #fff);
+        margin-bottom: 4px;
       }
 
       .toast-close {

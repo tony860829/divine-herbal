@@ -1,0 +1,51 @@
+@if (remedies().length) {
+  <section class="popular" aria-labelledby="popular-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="popular-title" class="section-title">
+          <img src="images/icon-herbal.webp" alt="" class="leaf-icon" aria-hidden="true" />
+          Most Popular Remedies
+          <img src="images/icon-herbal.webp" alt="" class="leaf-icon" aria-hidden="true" />
+        </h2>
+      </div>
+
+      <div class="remedies-grid">
+        @for (remedy of remedies(); track remedy.id) {
+          <article class="remedy-card">
+            <a [routerLink]="['/remedies', remedy.id]" class="remedy-card-link">
+              <div class="remedy-image">
+                @if (pictureUrl(remedy)) {
+                  <img [src]="pictureUrl(remedy)" [alt]="remedy.name" loading="lazy" />
+                } @else {
+                  <div class="remedy-no-image">
+                    <img src="images/icon-herbal.webp" alt="" aria-hidden="true" />
+                  </div>
+                }
+              </div>
+              <div class="remedy-body">
+                <h3>{{ remedy.name }}</h3>
+                <p>{{ introOf(remedy) }}</p>
+                <span class="remedy-link">
+                  View Recipe
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+}

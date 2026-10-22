@@ -52,6 +52,12 @@
       transition: transform 0.5s;
     }
 
+    .category-fallback {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #6b9e5e, #295b02);
+    }
+
     .category-overlay {
       position: absolute;
       inset: 0;

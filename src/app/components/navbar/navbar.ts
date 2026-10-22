@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { Auth as AuthService } from '../../services/auht';
 
@@ -18,12 +18,11 @@ import { Auth as AuthService } from '../../services/auht';
             >Home</a
           >
           <a routerLink="/remedies" routerLinkActive="active">Remedies</a>
-          <a routerLink="/categories" routerLinkActive="active">Categories</a>
           <a routerLink="/contact" routerLinkActive="active">Contact</a>
         </nav>
 
         <div class="nav-actions">
-          <button class="icon-btn" aria-label="Search">
+          <button class="icon-btn" (click)="toggleSearch()" [class.active]="searchOpen()" aria-label="Search">
             <svg
               width="20"
               height="20"
@@ -42,14 +41,14 @@ import { Auth as AuthService } from '../../services/auht';
           <!-- Si el usuario está autenticado -->
           @if (authService.isAuthenticated()) {
             <div class="user-menu">
-              <div class="user-badge" title="{{ authService.currentUser()?.firstName }}">
+              <a routerLink="/profile" class="user-badge" title="{{ authService.currentUser()?.firstName }}">
                 <span class="user-avatar">
                   {{ authService.currentUser()?.firstName?.charAt(0) || 'U' }}
                 </span>
                 <span class="user-name">
                   {{ authService.currentUser()?.firstName }}
                 </span>
-              </div>
+              </a>
               <button
                 class="icon-btn logout-btn"
                 (click)="logout()"
@@ -142,6 +141,40 @@ import { Auth as AuthService } from '../../services/auht';
         </div>
       </div>
 
+      @if (searchOpen()) {
+        <div class="nav-search">
+          <div class="container">
+            <div class="nav-search-box">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                #searchInput
+                type="search"
+                [value]="searchTerm()"
+                (input)="onSearchInput($event)"
+                (keydown.enter)="submitSearch()"
+                (keydown.escape)="closeSearch()"
+                placeholder="Search natural remedies..."
+                aria-label="Search remedies"
+              />
+              <button type="button" class="nav-search-btn" (click)="submitSearch()">Search</button>
+            </div>
+          </div>
+        </div>
+      }
+
       @if (menuOpen()) {
         <nav class="nav-mobile">
           <a
@@ -152,8 +185,10 @@ import { Auth as AuthService } from '../../services/auht';
             >Home</a
           >
           <a routerLink="/remedies" (click)="closeMenu()" routerLinkActive="active">Remedies</a>
-          <a routerLink="/categories" (click)="closeMenu()" routerLinkActive="active">Categories</a>
           <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active">Contact</a>
+          @if (authService.isAuthenticated()) {
+            <a routerLink="/profile" (click)="closeMenu()">My Profile</a>
+          }
 
           @if (authService.isAuthenticated()) {
             <div class="nav-mobile-user">
@@ -174,6 +209,10 @@ export class Navbar {
   private router = inject(Router);
 
   menuOpen = signal(false);
+  searchOpen = signal(false);
+  searchTerm = signal('');
+
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
   toggleMenu(): void {
     this.menuOpen.update((v) => !v);
@@ -181,6 +220,32 @@ export class Navbar {
 
   closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  toggleSearch(): void {
+    this.searchOpen.update((v) => !v);
+    if (this.searchOpen()) {
+      setTimeout(() => this.searchInput?.nativeElement.focus(), 50);
+    }
+  }
+
+  closeSearch(): void {
+    this.searchOpen.set(false);
+  }
+
+  onSearchInput(event: Event): void {
+    this.searchTerm.set((event.target as HTMLInputElement).value);
+  }
+
+  submitSearch(): void {
+    const term = this.searchTerm().trim();
+    if (!term) {
+      this.searchInput?.nativeElement.focus();
+      return;
+    }
+    this.closeSearch();
+    this.closeMenu();
+    this.router.navigate(['/remedies'], { queryParams: { search: term } });
   }
 
   logout(): void {

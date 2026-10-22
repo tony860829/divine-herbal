@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 export interface ToastMessage {
   id: string;
+  title?: string;
   text: string;
   type: 'success' | 'danger' | 'info' | 'warning';
   delay?: number;
@@ -16,7 +17,7 @@ export class Toast {
   show(message: Omit<ToastMessage, 'id'>) {
     const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
     const toastWithId: ToastMessage = { ...message, id };
-    
+
     this.message.update(list => [...list, toastWithId]);
 
     setTimeout(() => this.dismiss(toastWithId), message.delay ?? 3000);

@@ -11,9 +11,8 @@
   padding: 0 1rem 1.5rem;
   box-sizing: border-box;
 
-  /* Proporción para pantallas de escritorio */
-  aspect-ratio: 1920 / 986; 
-  min-height: 480px;
+  /* Altura tipo banner en escritorio */
+  min-height: 340px;
 
   &::before {
     content: '';
@@ -25,7 +24,7 @@
     width: 100%;
     height: 100%;
     background-image: url('/images/footer.webp');
-    background-size: 100% 100%; 
+    background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;
     pointer-events: none;
@@ -192,8 +191,13 @@
   .footer-social {
     text-align: center;
 
-    .social-links a {
-      justify-content: center;
+    .social-links {
+      align-items: center; /* Centra los items en el eje cruzado */
+
+      a {
+        width: 180px; /* Ancho fijo para equilibrar los 3 botones */
+        justify-content: flex-start; /* Mantiene icono + texto alineados a la izquierda */
+      }
     }
   }
 }

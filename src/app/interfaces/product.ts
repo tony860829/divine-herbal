@@ -16,7 +16,7 @@ export interface Product {
   categoryProductId: number;
   categoryProduct?: any;
   pictures: Picture[];
-  specifications: any[];
+  specifications: Specification[];
   stripeProductId: string;
   stripePriceId: string;
   createdAtUtc: string;
@@ -28,4 +28,11 @@ export interface Picture {
   name: string;
   productId: number;
   product?: any;
+}
+
+export interface Specification {
+  id: number;
+  productId: number;
+  name: string;
+  value: string | null;
 }

@@ -18,21 +18,28 @@ export interface OrderList {
   total: number;
   page: number;
   pageSize: number;
-  data: Data[];
+  data: OrderData[];
 }
 
-interface Data {
+export interface OrderData {
   publicId: string;
   status: number;
   currency: string;
   totalAmount: number;
   createdAtUtc: string;
-  items: ItemList[];
-  payments: any[];
+  items: OrderItemData[];
+  payments: OrderPaymentData[];
 }
 
-interface ItemList {
+export interface OrderItemData {
   name: string;
   quantity: number;
   unitAmount: number;
+}
+
+export interface OrderPaymentData {
+  status: string;
+  amount: number;
+  receiptUrl: string | null;
+  createdAtUtc: string;
 }

@@ -1,0 +1,121 @@
+<!-- ===== HERO ===== -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="page-hero__label">Our Remedies</span>
+      <h1 class="page-hero__title">Explore Our Natural Remedies</h1>
+      <div class="page-hero__line"></div>
+      <p class="page-hero__text">
+        Time-honored infusions and natural preparations crafted from plants, fruits, and spices
+        to support your daily well-being.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LISTING ===== -->
+<section class="remedies-listing">
+  <div class="container">
+    <div class="remedies-toolbar">
+      @if (categories().length) {
+        <div class="category-chips" role="group" aria-label="Filter remedies by category">
+          <button
+            type="button"
+            class="chip"
+            [class.active]="selectedCategoryId() === null"
+            (click)="selectCategory(null)"
+          >
+            All
+          </button>
+          @for (category of categories(); track category.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.active]="selectedCategoryId() === category.id"
+              (click)="selectCategory(category.id)"
+            >
+              {{ category.name }}
+            </button>
+          }
+        </div>
+      }
+
+      <div class="search-box">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          [value]="search()"
+          (input)="onSearch($event)"
+          placeholder="Search remedies..."
+          aria-label="Search remedies"
+        />
+      </div>
+    </div>
+
+    @if (filteredProducts().length) {
+      <div class="remedies-grid">
+        @for (product of filteredProducts(); track product.id) {
+          <article class="remedy-card">
+            <a [routerLink]="['/remedies', product.id]" class="remedy-card-link">
+              <div class="remedy-image">
+                @if (pictureUrl(product)) {
+                  <img [src]="pictureUrl(product)" [alt]="product.name" loading="lazy" />
+                } @else {
+                  <div class="remedy-no-image">
+                    <img src="images/icon-herbal.webp" alt="" aria-hidden="true" />
+                  </div>
+                }
+              </div>
+              <div class="remedy-body">
+                <h3>{{ product.name }}</h3>
+                <p>{{ introOf(product) }}</p>
+                <span class="remedy-link">
+                  View Recipe
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </article>
+        }
+      </div>
+    } @else if (!isLoading()) {
+      <div class="empty-state">
+        <img src="images/icon-herbal.webp" alt="" aria-hidden="true" />
+        <h2>No remedies found</h2>
+        @if (search() || selectedCategoryId() !== null) {
+          <p>Try a different search or category.</p>
+          <button type="button" class="btn-reset" (click)="search.set(''); selectCategory(null)">
+            Clear filters
+          </button>
+        } @else {
+          <p>New remedies are on the way. Check back soon.</p>
+        }
+      </div>
+    }
+  </div>
+</section>

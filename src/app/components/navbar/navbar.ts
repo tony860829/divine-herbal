@@ -1,6 +1,25 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  PLATFORM_ID,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { translatorWidget, TranslatorWidgetLayout } from 'google-translate-widget';
 import { Auth as AuthService } from '../../services/auht';
+import { Translation } from '../../services/translation';
 
 @Component({
   selector: 'app-navbar',
@@ -106,6 +125,10 @@ import { Auth as AuthService } from '../../services/auht';
             </button>
           }
 
+          <div class="translate-control notranslate">
+            <div id="translate-widget" class="ml-4"></div>
+          </div>
+
           <button class="menu-toggle" (click)="toggleMenu()" aria-label="Menu">
             @if (menuOpen()) {
               <svg
@@ -204,15 +227,67 @@ import { Auth as AuthService } from '../../services/auht';
   `,
   styleUrls: ['./navbar.scss'],
 })
-export class Navbar {
+export class Navbar implements AfterViewInit {
   authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+  private translation = inject(Translation);
+  private translatorInitialized = false;
+  private translatorInitializationScheduled = false;
 
   menuOpen = signal(false);
   searchOpen = signal(false);
   searchTerm = signal('');
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
+
+  ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    if (this.router.navigated) {
+      this.scheduleTranslatorInitialization();
+    }
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        if (this.translatorInitialized) {
+          this.translation.refresh();
+          return;
+        }
+
+        this.scheduleTranslatorInitialization();
+      });
+  }
+
+  private scheduleTranslatorInitialization(): void {
+    if (this.translatorInitializationScheduled) {
+      return;
+    }
+
+    this.translatorInitializationScheduled = true;
+    setTimeout(() => {
+      this.translatorInitializationScheduled = false;
+
+      if (this.translatorInitialized || this.destroyRef.destroyed) {
+        return;
+      }
+
+      translatorWidget({
+        element: 'translate-widget',
+        includedLanguages: ['en', 'es'],
+        defaultLanguage: 'en',
+        layout: TranslatorWidgetLayout.SIMPLE,
+      });
+      this.translatorInitialized = true;
+    });
+  }
 
   toggleMenu(): void {
     this.menuOpen.update((v) => !v);

@@ -7,6 +7,7 @@ import { Profile as ProfileService } from '../../services/profile';
 import { Company } from '../../interfaces/company';
 import { CurrentUser } from '../../interfaces/currentUser';
 import { OrderData } from '../../interfaces/order';
+import { Translation } from '../../services/translation';
 
 interface RecipePurchase {
   reference: string;
@@ -31,6 +32,7 @@ export class Profile {
   private meta = inject(Meta);
   private title = inject(Title);
   private platformId = inject(PLATFORM_ID);
+  private translation = inject(Translation);
 
   currentUser = this.authService.currentUser;
   purchase = signal<RecipePurchase | null>(null);
@@ -77,7 +79,10 @@ export class Profile {
     if (!user || !company) return;
 
     this.profileService.getUserOrders(user, company).subscribe({
-      next: (response) => this.orders.set(response.data ?? []),
+      next: (response) => {
+        this.orders.set(response.data ?? []);
+        this.translation.refresh();
+      },
       error: () => this.orders.set([]),
     });
   }

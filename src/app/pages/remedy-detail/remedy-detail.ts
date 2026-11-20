@@ -4,6 +4,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { finalize } from 'rxjs/operators';
 import { Product as ProductService } from '../../services/product';
 import { Product as IProduct } from '../../interfaces/product';
+import { Translation } from '../../services/translation';
 
 @Component({
   selector: 'app-remedy-detail',
@@ -17,6 +18,7 @@ export class RemedyDetail {
   private productService = inject(ProductService);
   private meta = inject(Meta);
   private title = inject(Title);
+  private translation = inject(Translation);
 
   product = signal<IProduct | null>(null);
   isLoading = signal(true);
@@ -56,7 +58,12 @@ export class RemedyDetail {
     this.isLoading.set(true);
     this.productService
       .getProduct(id)
-      .pipe(finalize(() => this.isLoading.set(false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading.set(false);
+          this.translation.refresh();
+        }),
+      )
       .subscribe({
         next: (product) => {
           this.product.set(product);

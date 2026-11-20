@@ -255,3 +255,46 @@ button {
     max-width: 500px;
   }
 }
+
+.translate-control {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+}
+
+#translate-widget {
+  display: inline-flex;
+}
+
+#translate-widget + .translator-widget-simple {
+  width: auto;
+  max-width: 7.5rem;
+  height: 2.25rem !important;
+  padding: 0 0.65rem !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 999px !important;
+  background: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  font: 500 0.8rem/1 var(--font-body) !important;
+  cursor: pointer;
+}
+
+#translate-widget + .translator-widget-simple:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (min-width: 640px) {
+  .translate-control {
+    margin-left: 0.75rem;
+  }
+}
+
+@media (max-width: 639px) {
+  #translate-widget + .translator-widget-simple {
+    max-width: 6.25rem;
+    padding: 0 0.45rem !important;
+    font-size: 0.72rem !important;
+  }
+}

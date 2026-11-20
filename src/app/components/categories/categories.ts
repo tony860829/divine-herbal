@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
 import { Product as ProductService } from '../../services/product';
 import { Product as IProduct } from '../../interfaces/product';
 import { Category as ICategory } from '../../interfaces/category';
+import { Translation } from '../../services/translation';
 
 interface CategoryCard {
   id: number;
@@ -24,6 +25,7 @@ interface CategoryCard {
 export class Categories {
   private productService = inject(ProductService);
   private platformId = inject(PLATFORM_ID);
+  private translation = inject(Translation);
 
   private readonly categoryIcons = [
     { keywords: ['digest', 'stomach', 'infusion', 'tea'], icon: 'images/icon-stomach.webp' },
@@ -60,6 +62,7 @@ export class Categories {
               icon: this.iconFor(category.name),
             })),
         );
+        this.translation.refresh();
       });
   }
 

@@ -6,6 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { Product as ProductService } from '../../services/product';
 import { Product as IProduct } from '../../interfaces/product';
 import { Category } from '../../interfaces/category';
+import { Translation } from '../../services/translation';
 
 @Component({
   selector: 'app-remedies',
@@ -19,6 +20,7 @@ export class Remedies {
   private route = inject(ActivatedRoute);
   private meta = inject(Meta);
   private title = inject(Title);
+  private translation = inject(Translation);
 
   products = signal<IProduct[]>([]);
   categories = signal<Category[]>([]);
@@ -89,7 +91,12 @@ export class Remedies {
       products: this.productService.getProducts(),
       categories: this.productService.getCategories(),
     })
-      .pipe(finalize(() => this.isLoading.set(false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading.set(false);
+          this.translation.refresh();
+        }),
+      )
       .subscribe(({ products, categories }) => {
         const companyId = products[0]?.companyId;
         const usedCategoryIds = new Set(products.map((product) => product.categoryProductId));

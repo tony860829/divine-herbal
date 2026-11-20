@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { Product as ProductService } from '../../services/product';
 import { Product as IProduct } from '../../interfaces/product';
+import { Translation } from '../../services/translation';
 
 @Component({
   selector: 'app-popular-remedies',
@@ -15,6 +16,7 @@ import { Product as IProduct } from '../../interfaces/product';
 export class PopularRemedies {
   private productService = inject(ProductService);
   private platformId = inject(PLATFORM_ID);
+  private translation = inject(Translation);
 
   remedies = signal<IProduct[]>([]);
 
@@ -27,6 +29,7 @@ export class PopularRemedies {
       .pipe(take(1))
       .subscribe((products) => {
         this.remedies.set(products.slice(0, 6));
+        this.translation.refresh();
       });
   }
 
